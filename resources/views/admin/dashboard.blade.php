@@ -31,13 +31,26 @@
     </div>
 
     {{-- Grafik --}}
-    <div class="bg-white p-6 rounded-xl shadow border">
-        <div class="flex justify-between items-center mb-4">
-            <div>
-                <h2 class="text-2xl font-bold text-gray-800">Penempatan PMI</h2>
-                <p class="text-sm text-gray-500">Statistik per tahun</p>
-            </div>
+<div class="bg-white p-6 rounded-xl shadow border">
 
+    <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
+
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">Penempatan PMI</h2>
+            <p class="text-sm text-gray-500">Statistik per tahun</p>
+        </div>
+
+        <div class="flex gap-3">
+
+            {{-- FILTER WILAYAH --}}
+            <select id="filterWilayah"
+                class="border rounded-lg px-4 pr-10 py-2 text-sm bg-white shadow-sm">
+                <option value="all">Semua Wilayah</option>
+                <option value="tangerang">Tangerang</option>
+                <option value="serang">Serang</option>
+            </select>
+
+            {{-- FILTER NEGARA --}}
             <select id="filterNegara"
                 class="border rounded-lg px-4 pr-10 py-2 text-sm bg-white shadow-sm">
                 <option value="all">Semua Negara</option>
@@ -48,12 +61,15 @@
                 <option value="Jepang">Jepang</option>
                 <option value="Korea">Korea</option>
             </select>
+
         </div>
 
-        <div class="h-[400px]">
-            <canvas id="chartTahunan"></canvas>
-        </div>
     </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- Chart Tahunan -->
+    <canvas id="chartTahunan"></canvas>
 
 </div>
 

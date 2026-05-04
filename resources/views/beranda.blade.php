@@ -23,36 +23,36 @@
     <hr>
 
     {{-- Section grafik statistik --}}
-    <section class="py-12 bg-white">
-        <div class="max-w-4xl mx-auto px-6">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Penempatan PMI</h2>
-                    <p class="text-sm text-gray-500">Data statistik per tahun</p>
-                </div>
-
-                <div class="relative">
-                    <select id="filterNegara"
-                        class="appearance-none border border-gray-300 rounded-lg px-4 py-2 pr-10 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400 font-medium text-gray-700 shadow-sm">
-                        <option value="all">Semua Negara</option>
-                        <option value="Taiwan">Taiwan</option>
-                        <option value="Hongkong">Hongkong</option>
-                        <option value="Malaysia">Malaysia</option>
-                        <option value="Singapore">Singapore</option>
-                        <option value="Jepang">Jepang</option>
-                        <option value="Korea">Korea</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-                    </div>
-                </div>
+<section class="py-12 bg-white">
+    <div class="max-w-4xl mx-auto px-6">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800">Penempatan PMI</h2>
+                <p class="text-sm text-gray-500">Data statistik per tahun</p>
             </div>
 
-            <div class="bg-white p-4 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-gray-100 h-[320px]">
-                <canvas id="chartTahunan" class="w-full h-full"></canvas>
+            <div class="relative">
+                <select id="filterNegara"
+                    class="appearance-none border border-gray-300 rounded-lg px-4 py-2 pr-10 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400 font-medium text-gray-700 shadow-sm">
+                    <option value="all">Semua Negara</option>
+                    <option value="Taiwan">Taiwan</option>
+                    <option value="Hongkong">Hongkong</option>
+                    <option value="Malaysia">Malaysia</option>
+                    <option value="Singapore">Singapore</option>
+                    <option value="Jepang">Jepang</option>
+                    <option value="Korea">Korea</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
             </div>
         </div>
-    </section>
+
+        <div class="bg-white p-4 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-gray-100 h-[320px]">
+            <canvas id="chartTahunan" class="w-full h-full"></canvas>
+        </div>
+    </div>
+</section>
 
     {{-- Section cek status --}}
     <section id="cek-penempatan" class="py-16 bg-yellow-500">
@@ -245,6 +245,15 @@
                         {{ session('success') }}
                     </div>
                 @endif
+                @if ($errors->any())
+                    <div class="mb-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded">
+                        <ul class="list-disc list-inside font-medium">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 <form action="{{ route('bukutamu.store') }}" method="POST" class="space-y-6">
                     @csrf
@@ -263,6 +272,43 @@
                     </div>
 
                     <div>
+                        <label for="no_telpon" class="block text-lg font-bold text-gray-800 mb-2">Nomor Telpon</label>
+                        <input type="text" name="no_telpon" id="no_telpon" 
+                               class="w-full p-4 rounded-xl border-2 border-gray-300 focus:border-[#F4CF3B] focus:ring-4 focus:ring-[#F4CF3B]/30 outline-none transition font-medium" 
+                               placeholder="Masukkan nomor telpon Anda" required>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-lg font-bold text-gray-800 mb-2">Negara</label>
+                            <input type="text" name="negara" 
+                                   class="w-full p-4 rounded-xl border-2 border-gray-300 focus:border-[#F4CF3B] focus:ring-4 focus:ring-[#F4CF3B]/30 outline-none transition font-medium" 
+                                   placeholder="Ketik negara..." required>
+                        </div>
+
+                        <div>
+                            <label class="block text-lg font-bold text-gray-800 mb-2">Sektor</label>
+                            <select name="sektor" 
+                                    class="w-full p-4 rounded-xl border-2 border-gray-300 bg-white focus:border-[#F4CF3B] focus:ring-4 focus:ring-[#F4CF3B]/30 outline-none transition font-medium" required>
+                                <option value="" disabled selected>Pilih Sektor...</option>
+                                <option value="Formal">Formal</option>
+                                <option value="Informal">Informal</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-lg font-bold text-gray-800 mb-2">Keperluan</label>
+                            <select name="keperluan" 
+                                    class="w-full p-4 rounded-xl border-2 border-gray-300 bg-white focus:border-[#F4CF3B] focus:ring-4 focus:ring-[#F4CF3B]/30 outline-none transition font-medium" required>
+                                <option value="" disabled selected>Pilih Keperluan...</option>
+                                <option value="Pelayanan Keberangkatan">SSW</option>
+                                <option value="Pelayanan Pengaduan">Mandiri</option>
+                                <option value="Pelayanan Pengaduan">Pengaduan</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
                         <label for="jenis_layanan" class="block text-lg font-bold text-gray-800 mb-2">Jenis Layanan</label>
                         <textarea name="jenis_layanan" id="jenis_layanan" rows="5" 
                                   class="w-full p-4 rounded-xl border-2 border-gray-300 focus:border-[#F4CF3B] focus:ring-4 focus:ring-[#F4CF3B]/30 outline-none transition font-medium resize-none" 
@@ -271,7 +317,7 @@
 
                     <button type="submit" 
                             class="w-full bg-[#F4CF3B] text-gray-900 font-black text-xl py-4 rounded-xl hover:bg-yellow-400 transition duration-300 shadow-lg transform hover:-translate-y-1 uppercase tracking-wider">
-                        Kirim Pesan
+                        Kirim
                     </button>
                 </form>
             </div>
@@ -308,7 +354,8 @@
     let chartInstance;
 
     function loadChart(negara = 'all') {
-        fetch("{{ route('chart.penempatan') }}?negara=" + negara)
+        // Tambahin parameter wilayah=all biar controllernya ngereturn 3 dataset (Tangerang, Serang, Total)
+        fetch("{{ route('chart.penempatan') }}?negara=" + negara + "&wilayah=all")
             .then(res => res.json())
             .then(res => {
                 const ctx = document.getElementById('chartTahunan').getContext('2d');
@@ -317,32 +364,19 @@
                     chartInstance.destroy();
                 }
 
-                let labelText = negara === 'all' ? 'Total Penempatan' : 'Penempatan ke ' + negara;
-
                 chartInstance = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: res.labels,
-                        datasets: [{
-                            label: labelText,
-                            data: res.data,
-                            borderColor: '#F59E0B',
-                            backgroundColor: (context) => {
-                                const ctx = context.chart.ctx;
-                                const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-                                gradient.addColorStop(0, 'rgba(245, 158, 11, 0.3)');
-                                gradient.addColorStop(1, 'rgba(245, 158, 11, 0.0)');
-                                return gradient;
-                            },
-                            borderWidth: 3,
+                        // 🔥 Ambil datasets dari backend, lalu gabungkan dengan styling UI halaman utama lu
+                        datasets: res.datasets.map(dataset => ({
+                            ...dataset,
                             pointBackgroundColor: '#FFFFFF',
-                            pointBorderColor: '#F59E0B',
+                            pointBorderColor: dataset.borderColor, // Warnanya ngikutin garis masing-masing
                             pointBorderWidth: 3,
-                            pointRadius: 6,
-                            pointHoverRadius: 8,
-                            fill: true,
-                            tension: 0.4
-                        }]
+                            pointRadius: 5, // Disesuaikan dikit biar gak terlalu numpuk
+                            pointHoverRadius: 7,
+                        }))
                     },
                     options: {
                         responsive: true,
@@ -363,10 +397,11 @@
                                 padding: 12,
                                 titleFont: { size: 14 },
                                 bodyFont: { size: 14 },
-                                displayColors: false,
+                                displayColors: true, // Diaktifkan biar muncul buletan warna di tooltip
                                 callbacks: {
+                                    // Bikin tooltip nampilin nama wilayah + jumlah orangnya
                                     label: function(context) {
-                                        return context.parsed.y + ' Orang';
+                                        return ' ' + context.dataset.label + ': ' + context.parsed.y + ' Orang';
                                     }
                                 }
                             }
@@ -397,7 +432,7 @@
     document.getElementById('filterNegara').addEventListener('change', function() {
         loadChart(this.value);
     });
-    </script>
+</script>
 
 </main>
 @endsection

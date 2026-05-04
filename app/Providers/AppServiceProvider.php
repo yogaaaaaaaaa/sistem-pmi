@@ -2,23 +2,25 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
-class AppServiceProvider extends ServiceProvider
+use App\Models\Penempatan;
+use App\Policies\PenempatanPolicy;
+
+class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * Policy mappings.
      */
-    public function register(): void
-    {
-        //
-    }
+    protected $policies = [
+        Penempatan::class => PenempatanPolicy::class,
+    ];
 
     /**
-     * Bootstrap any application services.
+     * Register services.
      */
     public function boot(): void
     {
-        //
+        $this->registerPolicies();
     }
 }

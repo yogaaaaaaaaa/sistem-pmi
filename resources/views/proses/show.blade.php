@@ -192,7 +192,7 @@
          class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center"
          onclick="closeModal()">
 
-        <div class="relative bg-white p-4 rounded-xl max-w-4xl w-full mx-4"
+        <div class="relative bg-white p-4 rounded-xl max-w-7xl w-full mx-4"
              onclick="event.stopPropagation()">
 
             <button onclick="closeModal()"
@@ -202,7 +202,7 @@
 
             <img id="modalImage"
                  src=""
-                 class="w-full max-h-[80vh] object-contain rounded-lg">
+                 class="w-full max-h-[90vh] object-contain rounded-lg">
         </div>
     </div>
 

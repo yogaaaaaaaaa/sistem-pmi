@@ -77,6 +77,10 @@
                 <tr>
                     <th class="border-b p-3 text-left">Nama</th>
                     <th class="border-b p-3 text-left">Alamat</th>
+                    <th class="border-b p-3 text-left">Nomor Telpon</th>
+                    <th class="border-b p-3 text-left">Negara</th>
+                    <th class="border-b p-3 text-left">Sektor</th>
+                    <th class="border-b p-3 text-left">Keperluan</th>
                     <th class="border-b p-3 text-left">Jenis Layanan</th>
                     <th class="border-b p-3 text-left">Tanggal</th>
                     <th class="border-b p-3 text-center w-28">Aksi</th>
@@ -88,6 +92,10 @@
                 <tr class="hover:bg-gray-50 transition">
                     <td class="p-3 font-semibold">{{ $row->nama }}</td>
                     <td class="p-3">{{ $row->alamat }}</td>
+                    <td class="p-3">{{ $row->no_telpon }}</td>
+                    <td class="p-3">{{ $row->negara }}</td>
+                    <td class="p-3">{{ $row->sektor }}</td>
+                    <td class="p-3">{{ $row->keperluan }}</td>
                     <td class="p-3">{{ $row->jenis_layanan }}</td>
                     <td class="p-3">{{ $row->created_at->format('d M Y') }}</td>
 
@@ -109,7 +117,8 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="p-6 text-center text-gray-500">
+                    {{-- Colspan diubah jadi 8 karena nambah 3 kolom --}}
+                    <td colspan="8" class="p-6 text-center text-gray-500">
                         Belum ada data buku tamu
                     </td>
                 </tr>
@@ -130,9 +139,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    /**
-     * Konfirmasi penghapusan data buku tamu
-     */
     function confirmDelete(id) {
         Swal.fire({
             title: 'Apakah Anda yakin?',

@@ -2,18 +2,6 @@
 
 @section('content')
 
-{{-- Alert notifikasi sukses --}}
-@if(session('success'))
-<div id="alert-success"
-     class="mb-4 flex items-center gap-3 bg-green-100 text-green-700 px-4 py-3 rounded-lg shadow transition-all duration-500">
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M5 13l4 4L19 7" />
-    </svg>
-    <span>{{ session('success') }}</span>
-</div>
-@endif
-
 <div class="p-6">
 
     {{-- Header halaman --}}
@@ -23,7 +11,7 @@
         {{-- Download Template Import --}}
         <a href="{{ route('admin.penempatan.template') }}"
            class="bg-gray-600 text-white px-4 py-2 rounded flex items-center gap-2">
-            📥 Download Template Excel
+            <i class="fa fa-download"></i> Download Template Excel
         </a>
     </div>
 
@@ -35,6 +23,16 @@
               action="{{ route('admin.penempatan.index') }}"
               class="flex items-center gap-2 w-full md:w-auto">
 
+            {{-- Dropdown Filter Wilayah --}}
+            <select name="wilayah"
+                    onchange="this.form.submit()"
+                    class="border rounded-lg px-2 pr-10 py-2 text-sm bg-white focus:outline-none focus:border-blue-500">
+                <option value="">Semua Wilayah</option>
+                <option value="tangerang" {{ request('wilayah') == 'tangerang' ? 'selected' : '' }}>Tangerang</option>
+                <option value="serang" {{ request('wilayah') == 'serang' ? 'selected' : '' }}>Serang</option>
+            </select>
+
+            {{-- Input Search --}}
             <input type="text"
                    name="search"
                    value="{{ request('search') }}"
@@ -45,7 +43,7 @@
                 Cari
             </button>
 
-            @if(request()->filled('search'))
+            @if(request()->filled('search') || request()->filled('wilayah'))
             <a href="{{ route('admin.penempatan.index') }}"
                class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg text-sm font-semibold">
                 Reset
@@ -120,24 +118,30 @@
                     <td class="p-3 flex gap-2 justify-center">
 
                         {{-- Edit --}}
-                        <button onclick='openEdit(@json($row))'
-                                class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded">
-                            Edit
-                        </button>
+@can('update', $row)
+<button onclick='openEdit(@json($row))'
+        class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded">
+    Edit
+</button>
+@endcan
 
-                        {{-- Hapus --}}
-                        <form id="delete-form-{{ $row->id }}"
-                              action="{{ route('admin.penempatan.destroy', $row->id) }}"
-                              method="POST">
-                            @csrf
-                            @method('DELETE')
 
-                            <button type="button"
-                                    onclick="confirmDelete({{ $row->id }})"
-                                    class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
-                                Hapus
-                            </button>
-                        </form>
+{{-- Hapus --}}
+@can('delete', $row)
+<form id="delete-form-{{ $row->id }}"
+      action="{{ route('admin.penempatan.destroy', $row->id) }}"
+      method="POST">
+
+    @csrf
+    @method('DELETE')
+
+    <button type="button"
+            onclick="confirmDelete({{ $row->id }})"
+            class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
+        Hapus
+    </button>
+</form>
+@endcan
                     </td>
                 </tr>
                 @empty
@@ -201,12 +205,10 @@
 {{-- ================= SCRIPT ================= --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+{{-- Panggil SweetAlert otomatis kalau ada session success --}}
+@if(session('success'))
 <script>
-/**
- * Menampilkan notifikasi sukses menggunakan SweetAlert
- */
-document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('alert-success')) {
+    document.addEventListener('DOMContentLoaded', () => {
         Swal.fire({
             icon: 'success',
             title: 'Berhasil',
@@ -214,9 +216,11 @@ document.addEventListener('DOMContentLoaded', () => {
             timer: 3000,
             showConfirmButton: false
         });
-    }
-});
+    });
+</script>
+@endif
 
+<script>
 /**
  * Konfirmasi hapus data
  */

@@ -12,12 +12,16 @@ return new class extends Migration
     public function up()
 {
     Schema::create('buku_tamus', function (Blueprint $table) {
-        $table->id();
-        $table->string('nama');
-        $table->string('alamat'); 
-        $table->text('jenis_layanan');   
-        $table->timestamps();
-    });
+    $table->id();
+    $table->string('nama');
+    $table->string('alamat');
+    $table->string('no_telpon');
+    $table->string('negara');
+    $table->string('sektor');
+    $table->string('keperluan');
+    $table->text('jenis_layanan');   
+    $table->timestamps();
+});
 }
 
     /**

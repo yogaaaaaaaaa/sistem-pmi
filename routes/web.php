@@ -50,7 +50,9 @@ Route::middleware(['auth', 'verified'])
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
         // Data grafik khusus tampilan admin
-        Route::get('/chart/penempatan', [AdminController::class, 'chartPenempatan'])->name('chart.penempatan');
+        Route::get('/chart/penempatan', [ChartController::class, 'penempatan'])->name('chart.penempatan');
+        Route::get('/chart/negara', [ChartController::class, 'negara'])->name('chart.negara');
+        Route::get('/chart/wilayah', [ChartController::class, 'wilayah'])->name('chart.wilayah');
 
         // Manajemen data penempatan (CRUD)
         Route::get('/penempatan', [AdminController::class, 'index'])->name('penempatan.index');

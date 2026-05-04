@@ -7,7 +7,7 @@
     {{-- Favicon --}}
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
 
-    <title>Admin Panel</title>
+    <title>{{ auth()->user()->name }}</title>
 
     {{-- Asset CSS & JS (Vite) --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -26,7 +26,7 @@
 
         {{-- Judul Sidebar --}}
         <div class="p-2 text-xl text-center font-bold border-b border-gray-700">
-            ADMIN P4MI
+            {{ auth()->user()->name }}
         </div>
 
         {{-- Navigasi --}}
@@ -79,96 +79,167 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-/**
- * Chart Penempatan Tahunan
- * Data diambil dari controller melalui AJAX (fetch)
- */
 
-let chartInstance = null;
+/*
+|--------------------------------------------------------------------------
+| GLOBAL CHART INSTANCE
+|--------------------------------------------------------------------------
+*/
+let chartTahunan = null;
+let chartNegara = null;
+let chartWilayah = null;
 
-/**
- * Load dan render chart berdasarkan filter negara
- */
-function loadChart(negara = 'all') {
-    fetch("{{ route('chart.penempatan') }}?negara=" + negara)
-        .then(response => response.json())
-        .then(response => {
-            const ctx = document.getElementById('chartTahunan').getContext('2d');
 
-            // Hapus chart sebelumnya agar tidak menumpuk
-            if (chartInstance) {
-                chartInstance.destroy();
-            }
+/* ======================
+   CHART TAHUNAN
+====================== */
+function loadChartTahunan(){
 
-            const labelText = negara === 'all'
-                ? 'Total Penempatan'
-                : 'Penempatan ke ' + negara;
+    const negara  = document.getElementById('filterNegara')?.value ?? 'all';
+    const wilayah = document.getElementById('filterWilayah')?.value ?? 'all';
 
-            chartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: response.labels,
-                    datasets: [{
-                        label: labelText,
-                        data: response.data,
-                        borderColor: '#F59E0B',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 6,
-                        pointHoverRadius: 8,
-                        pointBackgroundColor: '#FFFFFF',
-                        pointBorderColor: '#F59E0B',
-                        pointBorderWidth: 3,
-                        backgroundColor: (context) => {
-                            const ctx = context.chart.ctx;
-                            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-                            gradient.addColorStop(0, 'rgba(245,158,11,0.3)');
-                            gradient.addColorStop(1, 'rgba(245,158,11,0)');
-                            return gradient;
-                        }
-                    }]
+    fetch(`/chart/penempatan?negara=${negara}&wilayah=${wilayah}`)
+    .then(res => res.json())
+    .then(res => {
+
+        if(chartTahunan){
+            chartTahunan.destroy();
+        }
+
+        chartTahunan = new Chart(
+            document.getElementById('chartTahunan'),
+            {
+                type:'line',
+                data:{
+                    labels: res.labels,
+                    datasets: res.datasets 
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
+                options:{
+                    responsive:true,
+                    interaction:{
+                        mode:'index',
+                        intersect:false
                     },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            align: 'end'
-                        },
-                        tooltip: {
-                            displayColors: false,
-                            callbacks: {
-                                label: ctx => ctx.parsed.y + ' Orang'
-                            }
+                    plugins:{
+                        legend:{
+                            position:'top'
                         }
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { stepSize: 1 }
+                    scales:{
+                        y:{
+                            beginAtZero:true
                         }
                     }
                 }
-            });
-        })
-        .catch(error => console.error('Error load chart:', error));
+            }
+        );
+    });
 }
 
-// Load chart pertama kali
-document.addEventListener('DOMContentLoaded', () => {
-    loadChart();
+
+/* ======================
+   CHART NEGARA
+====================== */
+function loadChartNegara(){
+
+    fetch('/chart/negara')
+    .then(res => res.json())
+    .then(res => {
+
+        if(chartNegara){
+            chartNegara.destroy();
+        }
+
+        chartNegara = new Chart(
+            document.getElementById('chartNegara'),
+            {
+                type:'pie',
+                data:{
+                    labels: res.labels,
+                    datasets:[{
+                        label:'PMI per Negara',
+                        data: res.data
+                    }]
+                },
+                options:{
+                    responsive:true,
+                    plugins:{
+                        legend:{
+                            position:'bottom'
+                        }
+                    }
+                }
+            }
+        );
+    });
+}
+
+
+/* ======================
+   CHART WILAYAH
+====================== */
+function loadChartWilayah(){
+
+    fetch('/chart/wilayah')
+    .then(res => res.json())
+    .then(res => {
+
+        if(chartWilayah){
+            chartWilayah.destroy();
+        }
+
+        chartWilayah = new Chart(
+            document.getElementById('chartWilayah'),
+            {
+                type:'bar',
+                data:{
+                    labels: res.labels,
+                    datasets:[{
+                        label:'Jumlah PMI',
+                        data: res.data,
+                        borderWidth:1
+                    }]
+                },
+                options:{
+                    responsive:true,
+                    plugins:{
+                        legend:{
+                            display:true
+                        }
+                    },
+                    scales:{
+                        y:{
+                            beginAtZero:true
+                        }
+                    }
+                }
+            }
+        );
+    });
+}
+
+
+/* ======================
+   LOAD AWAL DASHBOARD
+====================== */
+document.addEventListener('DOMContentLoaded', function(){
+
+    loadChartTahunan();
+    loadChartNegara();
+    loadChartWilayah();
+
 });
 
-// Event filter negara
-document.getElementById('filterNegara')?.addEventListener('change', function () {
-    loadChart(this.value);
-});
+
+/* ======================
+   FILTER EVENT
+====================== */
+document.getElementById('filterNegara')
+?.addEventListener('change', loadChartTahunan);
+
+document.getElementById('filterWilayah')
+?.addEventListener('change', loadChartTahunan);
+
 </script>
 
 @endpush

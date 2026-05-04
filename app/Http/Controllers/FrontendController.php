@@ -50,13 +50,26 @@ class FrontendController extends Controller
     // Memvalidasi dan menyimpan data buku tamu baru ke database
     public function bukuTamuStore(Request $request)
     {
+
         $request->validate([
             'nama'          => 'required',
             'alamat'        => 'required',
+            'no_telpon'     => 'required',
+            'negara'        => 'required',
+            'sektor'        => 'required',
+            'keperluan'     => 'required',
             'jenis_layanan' => 'required',
         ]);
 
-        BukuTamu::create($request->only('nama', 'alamat', 'jenis_layanan'));
+        BukuTamu::create($request->only(
+            'nama', 
+            'alamat', 
+            'no_telpon', 
+            'negara', 
+            'sektor', 
+            'keperluan', 
+            'jenis_layanan'
+        ));
 
         return back()->with('success', 'Terima kasih! Data berhasil dikirim.');
     }

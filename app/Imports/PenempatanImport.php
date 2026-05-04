@@ -23,15 +23,34 @@ class PenempatanImport implements
 {
     use SkipsErrors;
 
-    // Memetakan setiap baris data dari file Excel ke dalam model database
+    protected $wilayah;
+    protected $user_id;
+
+    public function __construct($wilayah, $user_id)
+    {
+        $this->wilayah = $wilayah;
+        $this->user_id = $user_id;
+    }
+
     public function model(array $row)
     {
-        // Melewati proses impor jika kolom wajib tidak memiliki data
-        if (empty($row['id_pmi']) || empty($row['nama']) || empty($row['paspor'])) {
+        // skip kalau data wajib kosong
+        if (
+            empty($row['id_pmi']) ||
+            empty($row['nama']) ||
+            empty($row['paspor'])
+        ) {
+            return null;
+        }
+
+        // skip duplicate paspor
+        if (Penempatan::where('paspor', $row['paspor'])->exists()) {
             return null;
         }
 
         return new Penempatan([
+            'user_id'         => $this->user_id,
+            'wilayah'         => $this->wilayah,
             'id_pmi'          => trim($row['id_pmi']),
             'nama'            => trim($row['nama']),
             'negara'          => $row['negara'] ?? null,
@@ -41,13 +60,11 @@ class PenempatanImport implements
         ]);
     }
 
-    // Membatasi pembacaan file Excel per 1000 baris untuk menjaga performa memori
     public function chunkSize(): int
     {
         return 1000;
     }
 
-    // Mengirim data ke database dalam kelompok 1000 baris untuk mempercepat proses
     public function batchSize(): int
     {
         return 1000;
