@@ -238,7 +238,7 @@ class AdminController extends Controller
 
         $penempatan = Penempatan::findOrFail($id);
 
-        // 🔥 CEK POLICY
+        // CEK POLICY
         $this->authorize('update', $penempatan);
 
         $penempatan->update($request->all());
