@@ -297,7 +297,7 @@ class AdminController extends Controller
 
         $penempatan = Penempatan::findOrFail($id);
 
-        // 🔥 cek policy wilayah
+        // cek policy wilayah
         $this->authorize('delete', $penempatan);
 
         $penempatan->delete();
